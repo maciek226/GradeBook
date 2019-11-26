@@ -225,10 +225,19 @@ def enterStud():
 
             if student != -1:
                 enterGrades(student)
-    if gradebook.overWrite == 0:
-        writeSheet()
-    elif gradebook.overWrite == 1:
-        overwriteSheet()
+    while 1:
+        status = checkSheet()
+        if all(status):
+            if gradebook.overWrite == 0:
+                writeSheet()
+            elif gradebook.overWrite == 1:
+                overwriteSheet()
+            break
+        else:
+            saveas = str(input("One of the sheets is open by another program, please close it, and press enter or type saveas\n"))
+            if saveas == "saveas":
+                writeSheet()
+                break
 
 
 ###############################################################################
@@ -374,7 +383,6 @@ def writeSheet():
         name = 'file' + str(cc + 1) + '.xls'
 
         with open(os.path.join(gradebook.workDir, name), 'w+', encoding='utf-16', newline='') as book:
-            print(gradebook.fileFormat)
             writer = csv.writer(book, gradebook.fileFormat)
             book.seek(0)
 
@@ -395,6 +403,19 @@ def overwriteSheet():
             for row in gradebook.sheets[cc]:
                 writer.writerow(row)
         cc = cc + 1
+
+def checkSheet():
+	# Test if the spreadsheet is writable
+	status = list()
+	cc = 0
+	for sheet in gradebook.inFile:
+		try:
+			with open(gradebook.inFile[cc], 'w', encoding='utf-16', newline=''):
+				status.append(True)
+		except:
+			status.append(False)
+		cc = cc + 1
+	return(status)
 
 
 def logger(Log):
@@ -433,5 +454,6 @@ def isInt(string):
 gradebook = GradeBook()
 
 setup()
+
 print('\n\n\n\n\n\n\n\n\n')
 enterStud()
