@@ -2,7 +2,8 @@
 # Maciej Lacki 2019
 
 # limitations: error detection
-#   It is possible for user to not select any grade column
+#   It is possible for user to not select any grade column even multiple times
+#   The UI is difficult to understand at times
 
 
 ### Use at your
@@ -52,6 +53,7 @@ class GradeBook:
 #                                   Setup                                     #
 ###############################################################################
 def setup():
+    print('Welcome to GradeBook V0.5 \n')
     gradebook.workDir = os.getcwd()
     gradebook.configFile = os.path.join(gradebook.workDir, gradebook.configName)
     if os.path.isfile(gradebook.configFile):
@@ -143,7 +145,6 @@ def readSheets():
             book.seek(0)
             reader = csv.reader(book, bookType)
 
-            flag = 0;
             dd = 0
 
             # Add a new list to for each sheet
@@ -211,6 +212,7 @@ def selectCol(number):
 # Main interaction loop
 def enterStud():
     # On until broken
+    print("\n You can now search for the students using their student number or name \n If you select wrong person type CNC to cancel the selectrion \n To save all the data and exit the application type EXT")
     while 1:
         # Get the user input
         userIn = str(input('Enter Name or Student Number\n\t'))
@@ -419,7 +421,7 @@ def checkSheet():
 
 
 def logger(Log):
-    if GradBook.loggerSetup == 1:
+    if GradeBook.loggerSetup == 1:
         with open(GradeBook.logPath, 'a') as logger:
             time = datetime.now()
             logger.write(time.strftime("%y-%m-%d %H:%M:%S - "), Log)
@@ -429,7 +431,7 @@ def loggerSetup():
     GradeBook.logPath = os.path.join(GradeBook.logPath, "Log.txt")
 
     if os.path.exists(GradeBook.logPath):
-        GradBook.loggerSetup = 1
+        GradeBook.loggerSetup = 1
 
         return True
     else:
@@ -455,5 +457,5 @@ gradebook = GradeBook()
 
 setup()
 
-print('\n\n\n\n\n\n\n\n\n')
+print('\n\n')
 enterStud()
