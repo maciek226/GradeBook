@@ -5,7 +5,7 @@
 #   It is possible for user to not select any grade column
 
 
-### Use at your 
+### Use at your
 import os
 import csv
 import datetime
@@ -14,7 +14,7 @@ import datetime
 class GradeBook:
     # Current root directory
     workDir = str
-    # Assumed config file name/location 
+    # Assumed config file name/location
     configFile = str
 
     # Input Files
@@ -99,7 +99,7 @@ def settingsImport():
                     # The file does not exist
                     print('File ', row[1], ' does not exist')
             elif row[0] == 'overWrite':
-                overWrite = row[1]
+                GradeBook.overWrite = row[1]
         print('\n')
 
 
@@ -115,14 +115,14 @@ def settingGet():
     # If the config file does not exist, get the requiered paths
     while 1:
         while 1:
-            file = input('Enter path to the sheet\n')
+            file = str(input('Enter path to the sheet\n'))
             if os.path.isfile(file):
                 gradebook.inFile.append(file)
                 break
             elif 'cancel' in file:
                 break
 
-        if len(gradebook.inFile) > 0 and input('Add more sheets? (y/n) \n \t') == 'n':
+        if len(gradebook.inFile) > 0 and str(input('Add more sheets? (y/n) \n \t')) == 'n':
             gradebook.overWrite = 1
             break
 
@@ -131,9 +131,9 @@ def settingGet():
 
 
 def readSheets():
-    # Counter of the sheets 
+    # Counter of the sheets
     cc = 0
-    # Open each sheet 
+    # Open each sheet
     for sheet in gradebook.inFile:
         with open(gradebook.inFile[cc], 'r', encoding='utf-16', newline='') as book:
             # Check the type of the sheet, and bring the cursor back to 0
@@ -149,10 +149,10 @@ def readSheets():
             # Add a new list to for each sheet
             gradebook.sheets.append(list())
             for row in reader:
-                # Add to the newly created list a new list to contain the user data 
+                # Add to the newly created list a new list to contain the user data
                 gradebook.sheets[cc].append(list())
 
-                # Add the data from each row 
+                # Add the data from each row
                 for item in row:
                     gradebook.sheets[cc][dd].append(item)
                 dd = dd + 1
@@ -166,7 +166,7 @@ def readSheets():
 #                          User Interatction                                  #
 ###############################################################################
 
-# Select the spreadsheet columns which will be overwriten 
+# Select the spreadsheet columns which will be overwriten
 def gradeColSelect():
     cc = 0
     print('The Columns in the sheet:\n')
@@ -184,7 +184,7 @@ def gradeColSelect():
             if selection != -1:
                 gradebook.gradeCols[cc].append(selection)
 
-            more = input('\nWould you like to add more grade columns? (y/n)\n\t')
+            more = str(input('\nWould you like to add more grade columns? (y/n)\n\t'))
 
             if more == 'n':
                 break
@@ -194,7 +194,7 @@ def gradeColSelect():
 # Make a selection of the
 def selectCol(number):
     while 1:
-        selection = input('\nSelect the grading column \n\t')
+        selection = str(input('\nSelect the grading column \n\t'))
         try:
             if int(selection) >= 0 and int(selection) <= number:
 
@@ -208,14 +208,14 @@ def selectCol(number):
                 print('\nInput is invalid')
 
 
-# Main interaction loop 
+# Main interaction loop
 def enterStud():
-    # On until broken 
+    # On until broken
     while 1:
-        # Get the user input 
-        userIn = input('Enter Name or Student Number\n\t')
+        # Get the user input
+        userIn = str(input('Enter Name or Student Number\n\t'))
 
-        # If exit command - leave, else pass the input into search 
+        # If exit command - leave, else pass the input into search
         if str(userIn) == gradebook.exitCom:
             break
         elif str(userIn) == 'Settings':
@@ -234,9 +234,9 @@ def enterStud():
 ###############################################################################
 #                          Searching                                          #
 ###############################################################################
-# Searches the list of students 
+# Searches the list of students
 def search(phrase):
-    # Deafult serach mode - by number 
+    # Deafult serach mode - by number
     sMode = 0
 
     # If the entery is not an intiger change to name search mode
@@ -245,7 +245,7 @@ def search(phrase):
     except ValueError:
         sMode = 1
 
-    # Search using one of the modes 
+    # Search using one of the modes
     if sMode == 0:
         student = searchNumber(phrase)
     else:
@@ -327,12 +327,12 @@ def refineSearch(matches):
         cc = cc + 1
     while 1:
 
-        selection = input("Select the student:\n\t")
+        selection = str(input("Select the student:\n\t"))
 
         if str(selection) == str(gradebook.cancelCom):
             return (-1)
 
-        # attempt to use the input to select the user, if invalid try again 
+        # attempt to use the input to select the user, if invalid try again
         try:
             if int(selection) >= 0 and int(selection) < len(matches):
                 return (selection)
@@ -355,7 +355,7 @@ def enterGrades(student):
     cc = 1
     for entery in gradebook.gradeCols[student[-2]]:
         while 1:
-            grade = input('\n\tEnter Grade #%d\n\t\t' % (cc))
+            grade = str(input('\n\tEnter Grade #%d\n\t\t' % (cc)))
             try:
                 gradebook.sheets[student[-2]][student[-1]][entery] = float(grade)
                 break
