@@ -1,0 +1,1 @@
+PyInstaller -F GradeBook.py

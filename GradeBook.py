@@ -1,9 +1,21 @@
 # GradeBook
 # Maciej Lacki 2019
 
+# Version 0.55
+#   Fixed -1 after using CNC
+#   Added the path to the selected sheet in the grade selection path
+
 # limitations: error detection
 #   It is possible for user to not select any grade column even multiple times
 #   The UI is difficult to understand at times
+
+# TODO:
+#   Loger - gather all the data in case something crashes
+#   Restore - from the logs
+#   Menu - Make it easier to select the columns, adjust their order
+#   Add select save location
+#   Add ability to insert columns to the spreadsheet
+#   Add proper UI - Curses?
 
 
 ### Use at your
@@ -13,6 +25,8 @@ import datetime
 
 
 class GradeBook:
+    version = "0.55"
+    Dev = 0
     # Current root directory
     workDir = str
     # Assumed config file name/location
@@ -48,12 +62,15 @@ class GradeBook:
     # Overwrite grades
     overWrite = 1
 
+    menuOptions = ["Start", "Settings","Spreadsheet Setup","Exit and save", "Cancel"]
+    ready = 0
 
+    def __init__(self):
+        print('Welcome to GradeBook V%s \n'%self.version)
 ###############################################################################
 #                                   Setup                                     #
 ###############################################################################
 def setup():
-    print('Welcome to GradeBook V0.5 \n')
     gradebook.workDir = os.getcwd()
     gradebook.configFile = os.path.join(gradebook.workDir, gradebook.configName)
     if os.path.isfile(gradebook.configFile):
@@ -73,7 +90,6 @@ def setup():
         settingGet()
         settingsExport()
         readSheets()
-
 
 def settingsImport():
     with open(gradebook.configFile, newline='') as book:
@@ -136,6 +152,7 @@ def readSheets():
     # Counter of the sheets
     cc = 0
     # Open each sheet
+
     for sheet in gradebook.inFile:
         with open(gradebook.inFile[cc], 'r', encoding='utf-16', newline='') as book:
             # Check the type of the sheet, and bring the cursor back to 0
@@ -160,6 +177,7 @@ def readSheets():
         cc = cc + 1
 
     gradebook.numSheets = cc
+
     gradeColSelect()
 
 
@@ -176,7 +194,10 @@ def gradeColSelect():
 
         gradebook.gradeCols.append(list())
         dd = 0
+        print(("\t%s\n")%str(gradebook.inFile[cc]))
+
         for entery in sheet[0]:
+
             print("\t%d \t%s" % (dd, entery))
             dd = dd + 1
 
@@ -212,7 +233,7 @@ def selectCol(number):
 # Main interaction loop
 def enterStud():
     # On until broken
-    print("\n You can now search for the students using their student number or name \n If you select wrong person type CNC to cancel the selectrion \n To save all the data and exit the application type EXT")
+    print("\nYou can now search for the students using their student number or name \nYou do not need to provide full student number or full name \nIf you select wrong person type CNC to cancel the selectrion \nTo save all the data and exit the application type EXT\n")
     while 1:
         # Get the user input
         userIn = str(input('Enter Name or Student Number\n\t'))
@@ -241,6 +262,22 @@ def enterStud():
                 writeSheet()
                 break
 
+def menu():
+    print("\n Main Menu")
+    cc = 0
+    for item in GradeBook.menuOptions:
+        print("\t%d  %s"%(cc,item))
+        cc = cc + 1
+    while 1:
+        select = str(input("select one of the options \n \t"))
+        try:
+            if int(select) <= len(GradeBook.menuOptions)-1:
+                print("good")
+                break
+            else:
+                print("bad")
+        except:
+            print("Invalid Input")
 
 ###############################################################################
 #                          Searching                                          #
@@ -319,7 +356,7 @@ def searchNumber(number):
         return (matches[0])
     elif len(matches) > 1:
         selection = refineSearch(matches)
-        print(selection)
+        #print(selection)
         if selection == -1:
             return (-1)
         else:
@@ -454,7 +491,8 @@ def isInt(string):
 
 # The class holding all the information
 gradebook = GradeBook()
-
+if gradebook.Dev == 1:
+    menu()
 setup()
 
 print('\n\n')
