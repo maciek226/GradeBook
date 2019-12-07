@@ -4,6 +4,8 @@
 
 # Use at your own risk
 
+# Version 0.7
+
 # Version 0.6
 #   Fixed inability to cancle selection in grade input
 #   Improved the config file creation wizard
@@ -255,13 +257,13 @@ class GradeBook:
 
             while 1:
 
-                selection = self.select_column(dd, cc)
+                selection = self.select_column(dd-1, cc)
 
                 if selection != -1:
                     self.grading_columns[cc].append(selection)
 
-                more = str(input('\nWould you like to add more grade columns? (y/n/ADD)\n\t'))
-
+                more = str(input('\nWould you like to add more grade columns? (y/n)\n\t'))
+                
                 if more == 'n':
                     break
             cc = cc + 1
@@ -269,8 +271,9 @@ class GradeBook:
     # Make a selection of the sheet
     def select_column(self, number, sheet):
         while 1:
-            selection = str(input('Select the grading column \n\t'))
+            selection = str(input('Select the grading column (or type %s) \n\t' % self.add_sheet_command))
             try:
+                
                 if int(selection) >= 0 and int(selection) <= number:
 
                     return (int(selection))
@@ -281,7 +284,7 @@ class GradeBook:
                 if selection == self.add_sheet_command:
                     new_column_name = str(input('Enter the name of the new collumn: '))
                     self.add_column(sheet, new_column_name)
-                    return(number)
+                    return(number) #number is 1+the total number of cols
                 elif selection == str(self.cancel_command):
                     return (-1)
                 else:
@@ -560,7 +563,7 @@ class GradeBook:
             try:
                 with open(self.input_files[cc], 'w', encoding='utf-16', newline=''):
                     status.append(True)
-            except(ValueError):
+            except:
                 status.append(False)
             cc = cc + 1
         return(status)

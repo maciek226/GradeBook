@@ -1,3 +1,3 @@
-in	C:\Users\Maciej Lacki\Desktop\S15B.xls
-in	C:\Users\Maciej Lacki\Desktop\S21B.xls
+in	C:\Users\Maciej Lacki\Desktop\S15.xls
+in	C:\Users\Maciej Lacki\Desktop\S21.xls
 overWrite	1
