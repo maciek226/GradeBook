@@ -4,8 +4,8 @@
 
 # Use at your own risk
 
-# Version 0.7
-
+# Version 0.2
+#   Fixed issue with added columns not working correctly
 # Version 0.6
 #   Fixed inability to cancle selection in grade input
 #   Improved the config file creation wizard
@@ -43,7 +43,7 @@ class GradeBook:
     The class contains all the data and methods used to interacts with
     the spreadsheets
     """
-    version = "0.6"
+    version = "0.62"
     dev = 0
 
     # Current root directory
@@ -69,6 +69,7 @@ class GradeBook:
     grading_columns = list()
 
     sheets = list()
+    added_columns = int()
 
     # Commands
     exit_command = 'EXT'
@@ -282,9 +283,10 @@ class GradeBook:
             except(ValueError):
 
                 if selection == self.add_sheet_command:
+                    self.added_columns = self.added_columns+1
                     new_column_name = str(input('Enter the name of the new collumn: '))
                     self.add_column(sheet, new_column_name)
-                    return(number) #number is 1+the total number of cols
+                    return(number+self.added_columns) #number is 1+the total number of cols
                 elif selection == str(self.cancel_command):
                     return (-1)
                 else:
