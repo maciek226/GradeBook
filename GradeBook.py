@@ -4,7 +4,12 @@
 
 # Use at your own risk
 
-# Version 0.2
+# Version 0.65
+#   Fixed issue with reopening a file saved using the GradeBook
+#   Fixed overwrite settings
+#   Fixed file corruption on save
+#   Improvment to saving file- the files names will iterate and won't overwrite
+# Version 0.62
 #   Fixed issue with added columns not working correctly
 # Version 0.6
 #   Fixed inability to cancle selection in grade input
@@ -207,10 +212,13 @@ class GradeBook:
             with open(self.input_files[cc], 'r',
                       encoding='utf-16', newline='') as book:
 
-                # Check the type of the sheet, and bring the cursor back to 0
-                book.seek(2048)
-                bookType = csv.Sniffer().sniff(book.readline())
+                # Check the type of the sheet; skip the first
+                # line due to strange formatting 
+                book.readline()
+                bookType = csv.Sniffer().sniff(book.readline()
+                                               )
                 self.file_format = bookType
+                # Bring the cursor back to 0
                 book.seek(0)
                 reader = csv.reader(book, bookType)
 
@@ -331,9 +339,9 @@ class GradeBook:
             # Check if the sheets are writable
             status = self.check_sheet()
             if all(status):
-                if self.overwrite == 0:
+                if self.overwrite == '0':
                     self.write_sheet()
-                elif self.overwrite == 1:
+                elif self.overwrite == '1':
                     self.overwrite_sheet()
                 break
             else:
@@ -530,8 +538,17 @@ class GradeBook:
     def write_sheet(self):
         cc = 0
         for sheet in self.sheets:
-            name = 'file' + str(cc + 1) + '.xls'
-
+            dd = 1
+            input('press enter')
+            #Check if the file exists. Iterate the name by one if it does
+            while 1:
+                name = 'file' + str(dd)+ '-' +str(cc + 1) + '.xls'
+                if os.path.exists(os.path.join(self.working_dir, name)):
+                    dd = dd+1
+                else:
+                    break
+            
+            #name = 'file' +str(cc + 1) + '.xls'
             with open(os.path.join(self.working_dir, name), 'w+',
                       encoding='utf-16', newline='') as book:
 
@@ -563,7 +580,7 @@ class GradeBook:
         cc = 0
         for sheet in self.input_files:
             try:
-                with open(self.input_files[cc], 'w', encoding='utf-16', newline=''):
+                with open(self.input_files[cc], 'a', encoding='utf-16', newline=''):
                     status.append(True)
             except:
                 status.append(False)
