@@ -4,6 +4,8 @@
 
 # Use at your own risk
 
+# Version 0.70
+#   Spelling Error Fixes 
 # Version 0.65
 #   Fixed issue with reopening a file saved using the GradeBook
 #   Fixed overwrite settings
@@ -34,6 +36,9 @@
 #   Add select save location
 #   Ability to assign the same grades to more then one person
 #   Add Doc Strings
+
+#   Possibly make the input take letter ?
+
 
 
 import os
@@ -316,7 +321,7 @@ class GradeBook:
         print("\nYou can now search for the studentsusing their student",
               "number or name \nYou do not need to provide full student",
               " number or full name \nIf you select wrong person type CNC",
-              " to cancel the selectrion \nTo save all the data and",
+              " to cancel the selection \nTo save all the data and",
               " exit the application type EXT\n")
 
         # On until broken
